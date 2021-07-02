@@ -47,7 +47,7 @@ function processImports(loader, source, context, imports, state, cb) {
       }
 
       state.visited.add(resolved);
-      parse(loader, src, path.dirname(resolved), function (err, bld) {
+      parse(loader, src, path.dirname(resolved), state, function (err, bld) {
         if (err) {
           return cb(err);
         }
