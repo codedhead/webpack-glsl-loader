@@ -59,6 +59,7 @@ function processImports(loader, source, context, imports, state, cb) {
   });
 }
 
+// TODO: ignore #include in comments
 module.exports = function (source) {
   this.cacheable();
   var cb = this.async();
@@ -66,12 +67,14 @@ module.exports = function (source) {
     visited: new Set(),
     recStack: new Set(), // TODO: detect cycle
   };
+  const opts = this.getOptions();
+  const omitModuleExports = opts && opts.omitModuleExports;
   // TODO: get path of input source file
   parse(this, source, this.context, state, function (err, bld) {
     if (err) {
       return cb(err);
     }
 
-    cb(null, 'module.exports = ' + JSON.stringify(bld));
+    cb(null, (omitModuleExports ? bld : ('module.exports = ' + JSON.stringify(bld))));
   });
 };
